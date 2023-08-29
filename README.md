@@ -28,6 +28,7 @@ flutter create --org=com.elquineas hello
 - 프로젝트 이름은 가급적 소문자로 작성한다
 
 ```bash
+# * 주의
 flutter create --org=com.elquineas flutter-000-hello-01
 ```
 
