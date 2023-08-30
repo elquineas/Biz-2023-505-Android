@@ -45,3 +45,9 @@ flutter doctor
 ```bash
 flutter doctor --android-licenses
 ```
+
+- flutter 프로젝트를 만든후 프로젝트로 bash 창을 열어서 다음을 실행
+
+```bash
+flutter pub get
+```
