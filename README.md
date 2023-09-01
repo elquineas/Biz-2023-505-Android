@@ -1,6 +1,7 @@
 # Biz-2023-505-Android
 
 - Android Project
+  안드로이드 스튜디오 설치(필수\*)
 - @since 2023-08-28
 
 ## Flutter 설치
@@ -28,7 +29,7 @@ flutter create --org=com.elquineas hello
 - 프로젝트 이름은 가급적 소문자로 작성한다
 
 ```bash
-# * 주의
+# *주의
 flutter create --org=com.elquineas flutter-000-hello-01
 ```
 
