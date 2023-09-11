@@ -14,7 +14,25 @@ class _ArticlePage extends State<ArticlePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        leading: Image.asset(
+          "assets/box.png",
+          // width: 100,
+          // height: 100,
+          fit: BoxFit.fill,
+        ),
         title: const Text("생필품 확인"),
+        actions: [
+          IconButton(
+            onPressed: () {
+              // showDialog(
+              // barrierDismissible: false,
+              // context: context,
+              // builder: (context) => alertDialog(context),
+              // );
+            },
+            icon: const Icon(Icons.add_box_outlined),
+          )
+        ],
       ),
       body: const Center(
         child: Text("여기는 생필품 확인 페이지 입니다"),
