@@ -32,6 +32,7 @@ class App extends StatelessWidget {
 
     return MaterialApp(
       debugShowCheckedModeBanner: false,
+      theme: ThemeData(useMaterial3: true),
       home: Container(
         decoration: const BoxDecoration(
           image: DecorationImage(

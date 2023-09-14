@@ -72,7 +72,7 @@ class _StartPage extends State<StartPage> {
                     children: [
                       InkWell(
                         onTap: () {
-                          print("생필품 확인 터치");
+                          print("홈 -> 생필품 확인");
                           Navigator.push(
                             context,
                             MaterialPageRoute(
