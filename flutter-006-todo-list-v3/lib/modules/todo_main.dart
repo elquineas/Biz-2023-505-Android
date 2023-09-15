@@ -74,7 +74,7 @@ class _StartPage extends State<StartPage> {
                       icon: const Icon(Icons.clear),
                       padding: const EdgeInsets.fromLTRB(0, 0, 20, 0),
                     ),
-                    hintText: "할일을 입력해 주세요",
+                    hintText: "할일을 입력해 주세요111",
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(50),
                     ),
@@ -303,7 +303,7 @@ class _StartPage extends State<StartPage> {
               });
             },
             decoration: const InputDecoration(
-              hintText: "할일을 입력해주세요",
+              hintText: "할일을 입력해주세요2222",
             ),
           ),
         ],
