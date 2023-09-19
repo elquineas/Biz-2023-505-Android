@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:project/models/article_model.dart';
+import 'package:project/service/article_service.dart';
 import 'package:intl/intl.dart';
 
 class ArticlePage extends StatefulWidget {
@@ -135,50 +136,22 @@ class _ArticlePage extends State<ArticlePage> {
           )
         ],
       ),
-      body: ListView.builder(
-        itemCount: newArticleList.length,
-        itemBuilder: (context, index) {
-          return ListTile(
-            onTap: () {},
-            // selectedColor: const Color.fromARGB(249, 224, 112, 112),
-            // // splashColor: const Color.fromARGB(249, 106, 144, 226),
-            title: Column(key: Key(newArticleList[index].aName), children: [
-              Padding(
-                padding: const EdgeInsets.all(12),
-                child: Row(
-                  children: [
-                    Expanded(
-                      child: Padding(
-                        padding: const EdgeInsets.all(10.0),
-                        child: Text(
-                          newArticleList[index].aName,
-                          style: const TextStyle(
-                              fontSize: 20, color: Colors.deepPurple),
-                        ),
-                      ),
-                    ),
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Row(
-                          children: [
-                            Text(
-                              newArticleList[index].aCount,
-                              style: const TextStyle(
-                                  fontSize: 30, fontWeight: FontWeight.bold),
-                            ),
-                            const Text("일치"),
-                          ],
-                        ),
-                      ],
-                    ),
-                  ],
+      body: FutureBuilder(
+          future: ArticleService().selectAll(),
+          builder: (conetxt, snapshot) {
+            if (snapshot.hasData) {
+              return articleListView(
+                snapshot: snapshot,
+                // todoList: todoList,
+              );
+            } else {
+              return const Center(
+                child: CircularProgressIndicator(
+                  semanticsLabel: "데이터가 없습니다",
                 ),
-              ),
-            ]),
-          );
-        },
-      ),
+              );
+            }
+          }),
       bottomNavigationBar: Row(
         mainAxisAlignment: MainAxisAlignment.end,
         children: [
@@ -413,42 +386,144 @@ Widget alertDialog(BuildContext context) => AlertDialog(
       ],
     );
 
+Widget articleListView({required AsyncSnapshot<List<Article>> snapshot}) {
+  var articleList = snapshot.data!;
+  return ListView.builder(
+    itemCount: articleList.length,
+    itemBuilder: (context, index) {
+      return ListTile(
+        onTap: () {},
+        // selectedColor: const Color.fromARGB(249, 224, 112, 112),
+        // // splashColor: const Color.fromARGB(249, 106, 144, 226),
+        title: Column(key: Key(articleList[index].aName), children: [
+          Padding(
+            padding: const EdgeInsets.all(12),
+            child: Row(
+              children: [
+                Expanded(
+                  child: Padding(
+                    padding: const EdgeInsets.all(10.0),
+                    child: Text(
+                      articleList[index].aName,
+                      style: const TextStyle(
+                          fontSize: 20, color: Colors.deepPurple),
+                    ),
+                  ),
+                ),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      children: [
+                        Text(
+                          articleList[index].aCount,
+                          style: const TextStyle(
+                              fontSize: 30, fontWeight: FontWeight.bold),
+                        ),
+                        const Text("일치"),
+                      ],
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+        ]),
+      );
+    },
+  );
+  // ListView.builder(
+  //   itemCount: todoList.length,
+  //   itemBuilder: (context, index) {
+  //     return ListTile(
+  //       // onTap: () {},
+  //       selectedColor: const Color.fromARGB(249, 224, 112, 112),
+  //       splashColor: const Color.fromARGB(249, 106, 144, 226),
+  //       title: Dismissible(
+  //         /// key: Key(todoList[index].content),
+  //         /// 만약 todoList 데이터가 없는 경우 null exeption 이 발생할수 있기때문에
+  //         /// key 의 값이 null 이 된다. flutter 에서 제공하는 UUID 인 Uniquekey() 를 사용한다.
+  //         key: UniqueKey(),
+  //         background: Container(
+  //           margin: const EdgeInsets.all(8),
+  //           padding: const EdgeInsets.symmetric(horizontal: 20),
+  //           color: Colors.green,
+  //           alignment: Alignment.centerLeft,
+  //           child: const Icon(
+  //             Icons.save,
+  //             size: 36,
+  //           ),
+  //         ),
+  //         secondaryBackground: Container(
+  //           margin: const EdgeInsets.all(8),
+  //           padding: const EdgeInsets.symmetric(horizontal: 20),
+  //           color: Colors.red,
+  //           alignment: Alignment.centerRight,
+  //           child: const Icon(
+  //             Icons.delete,
+  //             size: 36,
+  //           ),
+  //         ),
+  //         //사라지기 전의 event
+  //         // confirmDismiss: (direction) => Future.value(false),
+  //         confirmDismiss: (direction) =>
+  //             onConfirmHandler(direction, todoList[index]),
+  //         onDismissed: (direction) async {
+  //           // 완료하기
+  //           if (direction == DismissDirection.startToEnd) {
+  //             var todo = todoList[index];
+  //             todo.complete = !todo.complete;
+  //             await TodoService().update(todo);
+  //             setState(() {
+  //               // todoList[index].complete = !todoList[index].complete;
+  //             });
+  //             //삭제하기
+  //           } else if (direction == DismissDirection.endToStart) {
+  //             var content = todoList[index].content;
+  //             ScaffoldMessenger.of(context).showSnackBar(
+  //               SnackBar(
+  //                 content: Text("$content 를 삭제했습니다."),
+  //               ),
+  //             );
 
-// class _HomePage extends State<HomePage> {
-//   @override
-//   Widget build(BuildContext context) {
-//     return Scaffold(
-//       appBar: AppBar(
-//         title: const Text("Home Page"),
-//       ),
-//       body: Center(
-//         child: Column(
-//           mainAxisAlignment: MainAxisAlignment.center,
-//           children: [
-//             const Text("여기는 Home Page 입니다"),
-//             ElevatedButton(
-//               onPressed: () {
-//                 var user = User(
-//                   username: "callor",
-//                   password: "123451234",
-//                   email: "callor@callor.com",
-//                   nickname: "홍길동",
-//                   tel: "010-111-1111",
-//                 );
-
-//                 Navigator.of(context).push(MaterialPageRoute(
-//                   builder: (context) => DetailPage(
-//                     name: "홍길동",
-//                     email: "callor@callor.com",
-//                     userDto: user,
-//                   ),
-//                 ));
-//               },
-//               child: const Text("자세히 보기"),
-//             )
-//           ],
-//         ),
-//       ),
-//     );
-//   }
-// }
+  //             await TodoService().delete(todoList[index].id ?? 0);
+  //             setState(() {});
+  //           }
+  //         },
+  //         child: Padding(
+  //           padding: const EdgeInsets.all(12),
+  //           child: Row(
+  //             children: [
+  //               Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+  //                 Text(todoList[index].sdate),
+  //                 Text(todoList[index].stime),
+  //               ]),
+  //               Expanded(
+  //                 child: Align(
+  //                   alignment: Alignment.centerLeft,
+  //                   child: Padding(
+  //                     padding: const EdgeInsets.all(10.0),
+  //                     child: FittedBox(
+  //                       fit: BoxFit.scaleDown,
+  //                       child: Text(
+  //                         todoList[index].content,
+  //                         style: todoList[index].complete
+  //                             ? const TextStyle(
+  //                                 decoration: TextDecoration.lineThrough,
+  //                                 fontSize: 20,
+  //                                 color: Colors.deepPurple)
+  //                             : const TextStyle(
+  //                                 fontSize: 20, color: Colors.grey),
+  //                       ),
+  //                     ),
+  //                   ),
+  //                 ),
+  //               ),
+  //             ],
+  //           ),
+  //         ),
+  //       ),
+  //     );
+  //   },
+  // );
+}
