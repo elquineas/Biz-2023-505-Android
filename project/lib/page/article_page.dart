@@ -1,3 +1,5 @@
+// ignore_for_file: unused_local_variable, prefer_typing_uninitialized_variables
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:project/models/article_model.dart';
@@ -43,6 +45,7 @@ class _ArticlePage extends State<ArticlePage> {
           .format(DateTime.now().add(const Duration(days: 7))),
     ),
   ];
+  var articleList = [];
   Article getArticle(String content, String count) => Article(
         aName: content,
         aDate: DateFormat("yyyy-MM-dd")
@@ -63,74 +66,74 @@ class _ArticlePage extends State<ArticlePage> {
           IconButton(
             onPressed: () {
               var result = showDialog(
-                  context: context, builder: (context) => ArticleAlertDialog());
-              AlertDialog(
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(5.0),
-                ),
-                actions: [
-                  TextField(
-                    textInputAction: TextInputAction.go,
-                    onChanged: (value) {
-                      tempName = value;
-                    },
-                    onSubmitted: (value) {
-                      print("네임 키보드 서브밋");
-                    },
-                    decoration: const InputDecoration(
-                      hintText: "생필품 품목",
-                    ),
-                  ),
-                  Row(
-                    children: [
-                      Flexible(
-                        child: TextField(
-                          inputFormatters: <TextInputFormatter>[
-                            FilteringTextInputFormatter.allow(RegExp(r'[0-9]')),
-                            FilteringTextInputFormatter.digitsOnly,
-                          ],
-                          keyboardType: TextInputType.number,
-                          textInputAction: TextInputAction.go,
-                          onChanged: (value) {
-                            tempCount = value;
-                          },
-                          onSubmitted: (value) {
-                            print("카운트 키보드 서브밋");
-                          },
-                          decoration: const InputDecoration(
-                            hintText: "남은 수량",
-                          ),
-                        ),
-                      ),
-                      const SizedBox(
-                        width: 70,
-                        child: Text(
-                          "일치",
-                        ),
-                      ),
-                    ],
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Expanded(
-                        child: OutlinedButton(
-                          onPressed: () {
-                            Navigator.of(context).pop(33);
-                          },
-                          child: const Text("등록"),
-                        ),
-                      ),
-                      Expanded(
-                        child: OutlinedButton(
-                          onPressed: () {},
-                          child: const Text("취소"),
-                        ),
-                      ),
-                    ],
-                  ),
-                ],
-              );
+                  context: context, builder: (context) => ArticleAddDialog());
+              // AlertDialog(
+              //   shape: RoundedRectangleBorder(
+              //     borderRadius: BorderRadius.circular(5.0),
+              //   ),
+              //   actions: [
+              //     TextField(
+              //       textInputAction: TextInputAction.go,
+              //       onChanged: (value) {
+              //         tempName = value;
+              //       },
+              //       onSubmitted: (value) {
+              //         print("네임 키보드 서브밋");
+              //       },
+              //       decoration: const InputDecoration(
+              //         hintText: "생필품 품목",
+              //       ),
+              //     ),
+              //     Row(
+              //       children: [
+              //         Flexible(
+              //           child: TextField(
+              //             inputFormatters: <TextInputFormatter>[
+              //               FilteringTextInputFormatter.allow(RegExp(r'[0-9]')),
+              //               FilteringTextInputFormatter.digitsOnly,
+              //             ],
+              //             keyboardType: TextInputType.number,
+              //             textInputAction: TextInputAction.go,
+              //             onChanged: (value) {
+              //               tempCount = value;
+              //             },
+              //             onSubmitted: (value) {
+              //               print("카운트 키보드 서브밋");
+              //             },
+              //             decoration: const InputDecoration(
+              //               hintText: "남은 수량",
+              //             ),
+              //           ),
+              //         ),
+              //         const SizedBox(
+              //           width: 70,
+              //           child: Text(
+              //             "일치",
+              //           ),
+              //         ),
+              //       ],
+              //     ),
+              //     Row(
+              //       mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              //       children: [
+              //         Expanded(
+              //           child: OutlinedButton(
+              //             onPressed: () {
+              //               // Navigator.of(context).pop(33);
+              //             },
+              //             child: const Text("등록"),
+              //           ),
+              //         ),
+              //         Expanded(
+              //           child: OutlinedButton(
+              //             onPressed: () {},
+              //             child: const Text("취소"),
+              //           ),
+              //         ),
+              //       ],
+              //     ),
+              //   ],
+              // );
             },
             icon: const Icon(Icons.add_box_outlined),
           )
@@ -155,22 +158,30 @@ class _ArticlePage extends State<ArticlePage> {
       bottomNavigationBar: Row(
         mainAxisAlignment: MainAxisAlignment.end,
         children: [
-          Container(
-            margin: const EdgeInsets.fromLTRB(10, 0, 10, 10),
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(20),
-              border: Border.all(
-                width: 2,
-                color: Colors.orange,
+          InkWell(
+            onTap: () {
+              var result = showDialog(
+                  context: context,
+                  builder: (context) => ArticleAlertDialog(context));
+              print("부족한 생필품 확인");
+            },
+            child: Container(
+              margin: const EdgeInsets.fromLTRB(10, 0, 10, 10),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(20),
+                border: Border.all(
+                  width: 2,
+                  color: Colors.orange,
+                ),
               ),
-            ),
-            child: const SizedBox(
-              width: 70,
-              height: 70,
-              child: Center(
-                child: Icon(
-                  Icons.assignment_late_outlined,
-                  size: 50,
+              child: const SizedBox(
+                width: 70,
+                height: 70,
+                child: Center(
+                  child: Icon(
+                    Icons.assignment_late_outlined,
+                    size: 50,
+                  ),
                 ),
               ),
             ),
@@ -206,7 +217,7 @@ class _ArticlePage extends State<ArticlePage> {
     );
   }
 
-  AlertDialog ArticleAlertDialog() {
+  AlertDialog ArticleAddDialog() {
     return AlertDialog(
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(5.0),
@@ -273,38 +284,45 @@ class _ArticlePage extends State<ArticlePage> {
           children: [
             Expanded(
               child: OutlinedButton(
-                onPressed: () {
+                onPressed: () async {
                   var popNav = true;
                   print("-------------------------");
                   print(_nameInputController.text);
                   print(_countInputController.text);
                   print("-------------------------");
-                  if (_countInputController.text.isNotEmpty) {
+                  if (_nameInputController.text.isEmpty) {
+                    var snackBar = const SnackBar(
+                      content: Text("생필품을 입력해주세요"),
+                    );
+                    ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                  } else if (_countInputController.text.isEmpty) {
                     var snackBar = const SnackBar(
                       content: Text("수량을 입력해주세요"),
                     );
                     ScaffoldMessenger.of(context).showSnackBar(snackBar);
                     // Navigator.of(context).pop(false);
                   } else {
+                    var article = getArticle(
+                        _nameInputController.text, _countInputController.text);
+                    await ArticleService().insert(article);
+                    setState(() {
+                      articleList.add(article);
+                    });
+                    _nameInputController.clear();
+                    _countInputController.clear();
                     Navigator.of(context).pop(false);
                   }
-                  //   onPressed: () async {
-                  //   var todo = getTodo(todoContent);
-                  //   await TodoService().insert(todo);
-                  //   setState(() {
-                  //     // todoList.add(todo);
-                  //     FocusScope.of(context).unfocus();
-                  //     todoContent = "";
-                  //   });
-                  //   inputController.clear();
-                  //    },
                 },
                 child: const Text("등록"),
               ),
             ),
             Expanded(
               child: OutlinedButton(
-                onPressed: () {},
+                onPressed: () {
+                  _nameInputController.clear();
+                  _countInputController.clear();
+                  Navigator.of(context).pop(false);
+                },
                 child: const Text("취소"),
               ),
             ),
@@ -315,8 +333,46 @@ class _ArticlePage extends State<ArticlePage> {
   }
 }
 
+AlertDialog ArticleAlertDialog(context) {
+  String alertText = "생필품이 어느정도 있어요 ^^";
+  int count = 0;
+  if (articleList.isEmpty) {
+    alertText = "생필품이 없어요";
+  }
+  for (var i = 0; i < articleList.length; i++) {
+    if (int.parse(articleList[i].aCount) < 4) {
+      count++;
+    }
+  }
+  if (count > 0) {
+    alertText = "부족한 생필품이 있어요!";
+  }
+
+  return AlertDialog(
+    shape: RoundedRectangleBorder(
+      borderRadius: BorderRadius.circular(5.0),
+    ),
+    actions: [
+      Center(
+        child: Column(
+          children: [
+            Text(alertText),
+            OutlinedButton(
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              child: const Text("취소"),
+            ),
+          ],
+        ),
+      ),
+    ],
+  );
+}
+
 String tempName = "";
 String tempCount = "";
+var articleList;
 
 Widget alertDialog(BuildContext context) => AlertDialog(
       shape: RoundedRectangleBorder(
@@ -387,14 +443,43 @@ Widget alertDialog(BuildContext context) => AlertDialog(
     );
 
 Widget articleListView({required AsyncSnapshot<List<Article>> snapshot}) {
-  var articleList = snapshot.data!;
+  var newArticleList = [
+    Article(
+      aName: "화장지",
+      aCount: "7",
+      aDate: DateFormat("yyyy-MM-dd")
+          .format(DateTime.now().add(const Duration(days: 7))),
+    ),
+    Article(
+      aName: "물티슈",
+      aCount: "7",
+      aDate: DateFormat("yyyy-MM-dd")
+          .format(DateTime.now().add(const Duration(days: 7))),
+    ),
+    Article(
+      aName: "물",
+      aCount: "7",
+      aDate: DateFormat("yyyy-MM-dd")
+          .format(DateTime.now().add(const Duration(days: 7))),
+    ),
+    Article(
+      aName: "밥",
+      aCount: "7",
+      aDate: DateFormat("yyyy-MM-dd")
+          .format(DateTime.now().add(const Duration(days: 7))),
+    ),
+  ];
+  articleList = snapshot.data!;
+  if (articleList.isEmpty) {
+    articleList = newArticleList;
+  }
+  debugPrint(articleList.toString());
+
   return ListView.builder(
     itemCount: articleList.length,
     itemBuilder: (context, index) {
       return ListTile(
         onTap: () {},
-        // selectedColor: const Color.fromARGB(249, 224, 112, 112),
-        // // splashColor: const Color.fromARGB(249, 106, 144, 226),
         title: Column(key: Key(articleList[index].aName), children: [
           Padding(
             padding: const EdgeInsets.all(12),

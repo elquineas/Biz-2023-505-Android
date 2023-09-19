@@ -1,17 +1,15 @@
 import 'package:path/path.dart';
-import 'package:project/models/article_model.dart';
+import 'package:project/models/power_model.dart';
 import 'package:sqflite/sqflite.dart';
 
-const String TBL_ARTICLE = "tbl_aricleList";
+const String TBL_POWER = "tbl_power";
 
-class ArticleService {
+class PowerService {
   late Database _database;
   final String createTable = """
-  CREATE TABLE $TBL_ARTICLE (
+  CREATE TABLE $TBL_POWER (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
-    aName TEXT,
-    aCount TEXT,
-    aDate TEXT
+    power INTEGER
   )
   """;
 
@@ -42,17 +40,17 @@ class ArticleService {
     if (newVersion > oldVersion) {
       final db = await database;
       final batch = db.batch();
-      batch.execute("DROP TABLE $TBL_ARTICLE");
+      batch.execute("DROP TABLE $TBL_POWER");
       batch.execute(createTable);
       await batch.commit();
     }
   }
 
-  Future<int> insert(Article article) async {
+  Future<int> insert(Power power) async {
     final db = await database;
     return await db.insert(
-      TBL_ARTICLE,
-      article.toMap(),
+      TBL_POWER,
+      power.toMap(),
       conflictAlgorithm: ConflictAlgorithm.replace,
     );
   }
@@ -60,33 +58,31 @@ class ArticleService {
   Future<int> delete(int id) async {
     final db = await database;
     return await db.delete(
-      TBL_ARTICLE,
+      TBL_POWER,
       where: "id = ?",
       whereArgs: [id],
     );
   }
 
-  Future<int> update(Article article) async {
+  Future<int> update(Power power) async {
     final db = await database;
     return db.update(
-      TBL_ARTICLE,
-      article.toMap(),
+      TBL_POWER,
+      power.toMap(),
       where: "id = ?",
-      whereArgs: [article.id],
+      whereArgs: [power.id],
     );
   }
 
-  Future<List<Article>> selectAll() async {
+  Future<List<Power>> selectAll() async {
     final db = await database;
-    final List<Map<String, dynamic>> articleList = await db.query(TBL_ARTICLE);
+    final List<Map<String, dynamic>> powerList = await db.query(TBL_POWER);
 
     return List.generate(
-      articleList.length,
-      (index) => Article(
-        id: articleList[index]["id"],
-        aName: articleList[index]["aName"],
-        aDate: articleList[index]["aDate"],
-        aCount: articleList[index]["aCount"],
+      powerList.length,
+      (index) => Power(
+        id: powerList[index]["id"],
+        power: powerList[index]["power"],
       ),
     );
   }
