@@ -66,6 +66,13 @@ class ArticleService {
     );
   }
 
+  Future<int> deleteAll() async {
+    final db = await database;
+    return await db.delete(
+      TBL_ARTICLE,
+    );
+  }
+
   Future<int> update(Article article) async {
     final db = await database;
     return db.update(

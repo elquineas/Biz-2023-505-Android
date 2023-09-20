@@ -2,7 +2,7 @@
 import 'dart:convert';
 
 class Article {
-  int? id;
+  num? id;
   String aName;
   String aCount;
   String aDate;

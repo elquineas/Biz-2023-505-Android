@@ -335,17 +335,23 @@ class _ArticlePage extends State<ArticlePage> {
 
 AlertDialog ArticleAlertDialog(context) {
   String alertText = "생필품이 어느정도 있어요 ^^";
+  String tempText = "";
   int count = 0;
+  // debugPrint(articleList.toString());
   if (articleList.isEmpty) {
     alertText = "생필품이 없어요";
   }
+
   for (var i = 0; i < articleList.length; i++) {
     if (int.parse(articleList[i].aCount) < 4) {
-      count++;
+      tempText = "$tempText ${articleList[i].aName}";
+      if ((i + 1) == articleList.length) {
+        tempText = "$tempText (이)가 떨어져가요!";
+        alertText = tempText;
+      } else {
+        tempText = "$tempText ,";
+      }
     }
-  }
-  if (count > 0) {
-    alertText = "부족한 생필품이 있어요!";
   }
 
   return AlertDialog(
@@ -361,7 +367,7 @@ AlertDialog ArticleAlertDialog(context) {
               onPressed: () {
                 Navigator.pop(context);
               },
-              child: const Text("취소"),
+              child: const Text("확인"),
             ),
           ],
         ),
@@ -445,24 +451,28 @@ Widget alertDialog(BuildContext context) => AlertDialog(
 Widget articleListView({required AsyncSnapshot<List<Article>> snapshot}) {
   var newArticleList = [
     Article(
+      id: 0,
       aName: "화장지",
       aCount: "7",
       aDate: DateFormat("yyyy-MM-dd")
           .format(DateTime.now().add(const Duration(days: 7))),
     ),
     Article(
+      id: 1,
       aName: "물티슈",
       aCount: "7",
       aDate: DateFormat("yyyy-MM-dd")
           .format(DateTime.now().add(const Duration(days: 7))),
     ),
     Article(
+      id: 2,
       aName: "물",
       aCount: "7",
       aDate: DateFormat("yyyy-MM-dd")
           .format(DateTime.now().add(const Duration(days: 7))),
     ),
     Article(
+      id: 3,
       aName: "밥",
       aCount: "7",
       aDate: DateFormat("yyyy-MM-dd")
@@ -472,9 +482,33 @@ Widget articleListView({required AsyncSnapshot<List<Article>> snapshot}) {
   articleList = snapshot.data!;
   if (articleList.isEmpty) {
     articleList = newArticleList;
+    for (var i = 0; i < articleList.length; i++) {
+      ArticleService().insert(articleList[i]);
+    }
+  } else {
+    // debugPrint("test");
   }
-  debugPrint(articleList.toString());
 
+  var toDay = DateTime.now();
+  // debugPrint("$toDay");
+  // debugPrint("${articleList.length}");
+  for (var i = 0; i < articleList.length; i++) {
+    String date = articleList[i].aDate;
+    int difference =
+        (int.parse(toDay.difference(DateTime.parse(date)).inDays.toString()) *
+                -1) +
+            1;
+    articleList[i].aCount = "$difference";
+    // debugPrint(articleList[i].toString());
+    // debugPrint("$difference");
+    ArticleService().update(articleList[i]);
+    if (articleList[i].aCount.contains('-')) {
+      // debugPrint("${i + 1} 삭제");
+      ArticleService().delete(articleList[i].id);
+    }
+  }
+
+  // debugPrint(articleList.toString());
   return ListView.builder(
     itemCount: articleList.length,
     itemBuilder: (context, index) {
@@ -501,7 +535,7 @@ Widget articleListView({required AsyncSnapshot<List<Article>> snapshot}) {
                     Row(
                       children: [
                         Text(
-                          articleList[index].aCount,
+                          "${articleList[index].aCount}",
                           style: const TextStyle(
                               fontSize: 30, fontWeight: FontWeight.bold),
                         ),
@@ -517,98 +551,4 @@ Widget articleListView({required AsyncSnapshot<List<Article>> snapshot}) {
       );
     },
   );
-  // ListView.builder(
-  //   itemCount: todoList.length,
-  //   itemBuilder: (context, index) {
-  //     return ListTile(
-  //       // onTap: () {},
-  //       selectedColor: const Color.fromARGB(249, 224, 112, 112),
-  //       splashColor: const Color.fromARGB(249, 106, 144, 226),
-  //       title: Dismissible(
-  //         /// key: Key(todoList[index].content),
-  //         /// 만약 todoList 데이터가 없는 경우 null exeption 이 발생할수 있기때문에
-  //         /// key 의 값이 null 이 된다. flutter 에서 제공하는 UUID 인 Uniquekey() 를 사용한다.
-  //         key: UniqueKey(),
-  //         background: Container(
-  //           margin: const EdgeInsets.all(8),
-  //           padding: const EdgeInsets.symmetric(horizontal: 20),
-  //           color: Colors.green,
-  //           alignment: Alignment.centerLeft,
-  //           child: const Icon(
-  //             Icons.save,
-  //             size: 36,
-  //           ),
-  //         ),
-  //         secondaryBackground: Container(
-  //           margin: const EdgeInsets.all(8),
-  //           padding: const EdgeInsets.symmetric(horizontal: 20),
-  //           color: Colors.red,
-  //           alignment: Alignment.centerRight,
-  //           child: const Icon(
-  //             Icons.delete,
-  //             size: 36,
-  //           ),
-  //         ),
-  //         //사라지기 전의 event
-  //         // confirmDismiss: (direction) => Future.value(false),
-  //         confirmDismiss: (direction) =>
-  //             onConfirmHandler(direction, todoList[index]),
-  //         onDismissed: (direction) async {
-  //           // 완료하기
-  //           if (direction == DismissDirection.startToEnd) {
-  //             var todo = todoList[index];
-  //             todo.complete = !todo.complete;
-  //             await TodoService().update(todo);
-  //             setState(() {
-  //               // todoList[index].complete = !todoList[index].complete;
-  //             });
-  //             //삭제하기
-  //           } else if (direction == DismissDirection.endToStart) {
-  //             var content = todoList[index].content;
-  //             ScaffoldMessenger.of(context).showSnackBar(
-  //               SnackBar(
-  //                 content: Text("$content 를 삭제했습니다."),
-  //               ),
-  //             );
-
-  //             await TodoService().delete(todoList[index].id ?? 0);
-  //             setState(() {});
-  //           }
-  //         },
-  //         child: Padding(
-  //           padding: const EdgeInsets.all(12),
-  //           child: Row(
-  //             children: [
-  //               Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-  //                 Text(todoList[index].sdate),
-  //                 Text(todoList[index].stime),
-  //               ]),
-  //               Expanded(
-  //                 child: Align(
-  //                   alignment: Alignment.centerLeft,
-  //                   child: Padding(
-  //                     padding: const EdgeInsets.all(10.0),
-  //                     child: FittedBox(
-  //                       fit: BoxFit.scaleDown,
-  //                       child: Text(
-  //                         todoList[index].content,
-  //                         style: todoList[index].complete
-  //                             ? const TextStyle(
-  //                                 decoration: TextDecoration.lineThrough,
-  //                                 fontSize: 20,
-  //                                 color: Colors.deepPurple)
-  //                             : const TextStyle(
-  //                                 fontSize: 20, color: Colors.grey),
-  //                       ),
-  //                     ),
-  //                   ),
-  //                 ),
-  //               ),
-  //             ],
-  //           ),
-  //         ),
-  //       ),
-  //     );
-  //   },
-  // );
 }

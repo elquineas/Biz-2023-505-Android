@@ -21,7 +21,7 @@ class PowerService {
     // 실제 phone 의 DB 가 저장되는 경로 가져오기
     var dbPath = await getDatabasesPath();
     // 저장될 database 파일을 설정
-    var dbFile = join(dbPath, "article.dbf");
+    var dbFile = join(dbPath, "power.dbf");
     return await openDatabase(
       dbFile,
       onCreate: onCreateTable,
@@ -61,6 +61,13 @@ class PowerService {
       TBL_POWER,
       where: "id = ?",
       whereArgs: [id],
+    );
+  }
+
+  Future<int> deleteAll() async {
+    final db = await database;
+    return await db.delete(
+      TBL_POWER,
     );
   }
 
